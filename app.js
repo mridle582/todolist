@@ -31,11 +31,12 @@ app.get("/", (req, res) => {
             day="Friday";
             break;
         case 6: 
-            day="Saturdau";
+            day="Saturday";
             break;
         default: 
             console.log(`Invalid Value: currentDay= ${currentDay}`);
     }
+    console.log(currentDay);
 
     res.render('list', { kindOfDay: day });
 
