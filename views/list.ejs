@@ -7,10 +7,24 @@
     <title>To Do List</title>
 </head>
 <body>
-    <% if (kindOfDay === "Saturday" || kindOfDay === "Sunday") { %>
-        <h1 style="color: purple"><%= kindOfDay %> ToDo List</h1>
+
+    <h1><%= day %></h1>
+
+    <ul>
+        <% tasks.forEach(task => { %>
+         <li> <%= task %> </li>
+        <% }) %>
+    </ul>
+
+    <form action="/" method="post">
+        <input type="text" name="newTask" placeholder="New Todo">
+        <button type="submit" name="button">Add</button>
+    </form>
+
+    <!-- <% if (day === "Saturday" || day === "Sunday") { %>
+        <h1 style="color: purple"><%= day %> ToDo List</h1>
     <% } else { %>
-        <h1 style="color: blue"><%= kindOfDay %> ToDo List</h1>
-    <% } %>
+        <h1 style="color: blue"><%= day %> ToDo List</h1>
+    <% } %> -->
 </body>
 </html>
