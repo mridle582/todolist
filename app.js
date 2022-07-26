@@ -3,7 +3,8 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-let tasks = ["Buy Food","Cook Food", "Eat Food"];
+let nonWorkTasks = ["Buy Food", "Cook Food", "Eat Food"];
+let workTasks = [];
 
 app.set("view engine", "ejs");
 
@@ -26,16 +27,41 @@ app.get("/", (req, res) => {
     let day = today.toLocaleDateString("en-US", options);
 
     res.render('list', {
-        day: day,
-        tasks: tasks
+        listTitle: day,
+        tasks: nonWorkTasks
     });
 
 });
 
+app.get("/work", (req, res) => {
+    res.render("list", {
+        listTitle: "Work List",
+        tasks: workTasks
+    });
+});
+
+app.get("/about", (req, res)=> {
+    res.render("about");
+})
+
 app.post("/", (req, res) => {
+
     let task = req.body.newTask;
-    tasks.push(task);
-    res.redirect("/");
+
+    if (req.body.list === "Work List") {
+        workTasks.push(task);
+        res.redirect("/work");
+    } else {
+        nonWorkTasks.push(task);
+        res.redirect("/");
+    }
+
+});
+
+app.post("/work", (req, res) => {
+    let workTask = req.body.newTask;
+    workTasks.push(workTask);
+    res.redirect("/work");
 });
 
 app.listen(3000, () => {
