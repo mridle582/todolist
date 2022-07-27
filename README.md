@@ -1,4 +1,4 @@
-# todolist
+# To Do List
 A Minimalistic To-Do List implementation
 
 <p align="center">
