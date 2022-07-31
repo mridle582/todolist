@@ -28,6 +28,12 @@ const defItems = [new Item({
     name: "<-- Hit this to delete an item."
 })];
 
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+}
+
+const List = mongoose.model("List", listSchema);
 
 app.get("/", (req, res) => {
     Item.find({}, (err, foundItems) => {
@@ -46,25 +52,59 @@ app.get("/", (req, res) => {
 
 });
 
-app.post("/", (req, res) => {
-
-    const item = req.body.newItem;
-
-    if (req.body.list === "Work") {
-        workItems.push(item);
-        res.redirect("/work");
-    } else {
-        items.push(item);
-        res.redirect("/");
-    }
-});
-
-app.get("/work", (req, res) => {
-    res.render("list", {
-        listTitle: "Work List",
-        newListItems: workItems
+app.get("/:customListName", (req, res) => {
+    const customListName = req.params.customListName;
+    List.findOne({
+        name: customListName
+    }, (err, foundList) => {
+        if (!err) {
+            if (foundList) {
+                console.log("Found list!");
+                res.render("list", {
+                    listTitle: foundList.name,
+                    newListItems: foundList.items
+                });
+            } else {
+                const list = new List({
+                    name: customListName,
+                    items: defItems
+                });
+                list.save();
+                res.redirect(`/${customListName}`);
+            }
+        } else {
+            console.log(err);
+            res.redirect("/");
+        }
     });
 });
+
+app.post("/", (req, res) => {
+
+    const item = new Item({
+        name: req.body.newItem
+    });
+
+    item.save();
+    res.redirect("/");
+});
+
+app.post("/delete", (req, res) => {
+    const oldItemID = req.body.checkbox.trim();
+    Item.findByIdAndRemove({
+        _id: oldItemID
+    }, (err) => {
+        err ? console.log(err) : console.log(`Item with ID: ${oldItemID} was deleted.`);
+    });
+    res.redirect("/");
+});
+
+// app.get("/work", (req, res) => {
+//     res.render("list", {
+//         listTitle: "Work List",
+//         newListItems: workItems
+//     });
+// });
 
 app.get("/about", (req, res) => {
     res.render("about");
