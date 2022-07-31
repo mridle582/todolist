@@ -28,23 +28,21 @@ const defItems = [new Item({
     name: "<-- Hit this to delete an item."
 })];
 
-Item.insertMany(defItems, (err) => {
-    err ? console.log(err) : console.log("Added default list items successfully");
-});
 
 app.get("/", (req, res) => {
-
-
-    Item.find({}, (err, items) => {
-        // err ? console.log(err) : console.log(items);
-        res.render("list", {
-            listTitle: "Today",
-            newListItems: items
-        });
+    Item.find({}, (err, foundItems) => {
+        if (foundItems.length === 0) {
+            Item.insertMany(defItems, (err) => {
+                err ? console.log(err) : console.log("Added default list items successfully");
+            });
+            res.redirect("/");
+        } else {
+            res.render("list", {
+                listTitle: "Today",
+                newListItems: foundItems
+            });
+        }
     });
-
-
-    // res.render("list", {listTitle: day, newListItems: items});
 
 });
 
