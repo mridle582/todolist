@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 // const date = require(__dirname + "/date.js");
 
 const app = express();
@@ -53,18 +54,19 @@ app.get("/", (req, res) => {
 });
 
 app.get("/:customListName", (req, res) => {
-    const customListName = req.params.customListName;
+    const customListName = _.capitalize(req.params.customListName.trim());
     List.findOne({
         name: customListName
     }, (err, foundList) => {
         if (!err) {
             if (foundList) {
-                console.log("Found list!");
+                console.log(`Found list: ${foundList.name}`);
                 res.render("list", {
                     listTitle: foundList.name,
                     newListItems: foundList.items
                 });
             } else {
+                console.log(`Create list: ${foundList.name}`);
                 const list = new List({
                     name: customListName,
                     items: defItems
@@ -81,17 +83,19 @@ app.get("/:customListName", (req, res) => {
 
 app.post("/", (req, res) => {
     // Trim added to remove carraige return
-    const listName = req.body.list.trim();
+    const listName = _.capitalize(req.body.list.trim());
 
     const item = new Item({
-        name: req.body.newItem
+        name: req.body.newItem.trim()
     });
 
     if (listName === "Today") {
         item.save();
         res.redirect("/");
     } else {
-        List.findOne({name: listName}, (err, foundList) => {
+        List.findOne({
+            name: listName
+        }, (err, foundList) => {
             foundList.items.push(item);
             foundList.save();
             res.redirect(`/${listName}`);
@@ -101,12 +105,29 @@ app.post("/", (req, res) => {
 
 app.post("/delete", (req, res) => {
     const oldItemID = req.body.checkbox.trim();
-    Item.findByIdAndRemove({
-        _id: oldItemID
-    }, (err) => {
-        err ? console.log(err) : console.log(`Item with ID: ${oldItemID} was deleted.`);
-    });
-    res.redirect("/");
+    const listName = _.capitalize(req.body.listName.trim());
+
+    if (listName == "Today") {
+        Item.findByIdAndRemove({
+            _id: oldItemID
+        }, (err) => {
+            err ? console.log(err) : console.log(`Item with ID: ${oldItemID} was deleted.`);
+        });
+        res.redirect("/");
+    } else {
+        List.findOneAndUpdate({
+            name: listName
+        }, {
+            $pull: {
+                items: {
+                    _id: oldItemID
+                }
+            }
+        }, (err, foundList) => {
+            err ? console.log(err) : res.redirect(`/${listName}`);
+        });
+    }
+
 });
 
 app.get("/about", (req, res) => {
