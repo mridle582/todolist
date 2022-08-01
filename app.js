@@ -66,12 +66,13 @@ app.get("/:customListName", (req, res) => {
                     newListItems: foundList.items
                 });
             } else {
-                console.log(`Create list: ${foundList.name}`);
+
                 const list = new List({
                     name: customListName,
                     items: defItems
                 });
                 list.save();
+                console.log(`Created list: ${customListName}`);
                 res.redirect(`/${customListName}`);
             }
         } else {
