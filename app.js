@@ -80,13 +80,23 @@ app.get("/:customListName", (req, res) => {
 });
 
 app.post("/", (req, res) => {
+    // Trim added to remove carraige return
+    const listName = req.body.list.trim();
 
     const item = new Item({
         name: req.body.newItem
     });
 
-    item.save();
-    res.redirect("/");
+    if (listName === "Today") {
+        item.save();
+        res.redirect("/");
+    } else {
+        List.findOne({name: listName}, (err, foundList) => {
+            foundList.items.push(item);
+            foundList.save();
+            res.redirect(`/${listName}`);
+        });
+    }
 });
 
 app.post("/delete", (req, res) => {
@@ -98,13 +108,6 @@ app.post("/delete", (req, res) => {
     });
     res.redirect("/");
 });
-
-// app.get("/work", (req, res) => {
-//     res.render("list", {
-//         listTitle: "Work List",
-//         newListItems: workItems
-//     });
-// });
 
 app.get("/about", (req, res) => {
     res.render("about");
