@@ -1,4 +1,5 @@
 # To Do List
+
 A Minimalistic To-Do List implementation - Data Persistence with MongoDB
 
 <p align="center">
