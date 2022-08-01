@@ -50,7 +50,6 @@ app.get("/", (req, res) => {
             });
         }
     });
-
 });
 
 app.get("/:customListName", (req, res) => {
@@ -66,7 +65,6 @@ app.get("/:customListName", (req, res) => {
                     newListItems: foundList.items
                 });
             } else {
-
                 const list = new List({
                     name: customListName,
                     items: defItems
@@ -128,7 +126,6 @@ app.post("/delete", (req, res) => {
             err ? console.log(err) : res.redirect(`/${listName}`);
         });
     }
-
 });
 
 app.get("/about", (req, res) => {
