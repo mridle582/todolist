@@ -13,6 +13,9 @@
   },
   "author": "James Finn",
   "license": "MIT",
+  "engines": {
+    "node": "^18.7.0"
+  },
   "bugs": {
     "url": "https://github.com/mridle582/todolist/issues"
   },
