@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -13,7 +15,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://0.0.0.0:27017/todolistDB");
+// mongoose.connect("mongodb://0.0.0.0:27017/todolistDB");
+mongoose.connect(`${process.env.MONGODB_URL}/todolistDB`);
 
 const itemsSchema = {
     name: String
@@ -59,7 +62,7 @@ app.get("/:customListName", (req, res) => {
     }, (err, foundList) => {
         if (!err) {
             if (foundList) {
-                console.log(`Found list: ${foundList.name}`);
+                // console.log(`Found list: ${foundList.name}`);
                 res.render("list", {
                     listTitle: foundList.name,
                     newListItems: foundList.items
@@ -70,7 +73,7 @@ app.get("/:customListName", (req, res) => {
                     items: defItems
                 });
                 list.save();
-                console.log(`Created list: ${customListName}`);
+                // console.log(`Created list: ${customListName}`);
                 res.redirect(`/${customListName}`);
             }
         } else {

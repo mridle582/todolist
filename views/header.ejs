@@ -9,6 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="images/favicon.ico">
+  <script type='text/javascript'>
+        (() => {
+            if(window.localStorage) {
+                if (!localStorage.getItem('reload')) {
+                    localStorage['reload'] = true;
+                    window.location.reload();
+                } else {
+                    localStorage.removeItem('reload');
+                }
+            }
+        })();
+  </script>
 </head>
 
 <body>
