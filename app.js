@@ -135,6 +135,6 @@ app.get("/about", (req, res) => {
     res.render("about");
 });
 
-app.listen(3000, () => {
-    console.log("Server started on port 3000");
-});
+app.listen(port || 3000, () => {
+    typeof port !== "undefined") ? console.log(`Server is running on port ${port}`) : console.log(`Server is running on port 3000`);
+}
