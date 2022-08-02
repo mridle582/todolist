@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const port = process.env.PORT;
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
